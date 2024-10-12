@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+:root {
+  --text-title-color: #E70F2B 
+}
+
+body {
+  background-color: #F5F4F4;
+}
+
+.name-avatar{
+  color: var(--text-title-color);
+}
