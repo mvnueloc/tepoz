@@ -39,9 +39,9 @@ const Modal = ({ isOpen, onClose, children }) => {
 };
 
 export default function Home() {
-  const [input, setInput] = useState("");
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [recording, setRecording] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -71,6 +71,7 @@ export default function Home() {
   const audioChunksRef = useRef([]);
 
   const startRecording = async () => {
+
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       alert("Tu navegador no soporta la grabación de audio.");
       return;
@@ -94,8 +95,10 @@ export default function Home() {
         sendAudio(audioBlob);
       };
     } catch (error) {
+      
       console.error("Error al acceder al micrófono:", error);
       alert("No se pudo acceder al micrófono.");
+
     }
   };
 
@@ -111,7 +114,9 @@ export default function Home() {
     formData.append("audio", audioBlob, "grabacion.wav");
 
     try {
-      const response = await fetch("http://localhost:8080/transcribe", {
+      
+      setIsLoading(true);
+      const response = await fetch("http://127.0.0.1:5000/transcribe", {
         method: "POST",
         body: formData,
       });
@@ -122,20 +127,62 @@ export default function Home() {
       }
 
       const data = await response.json();
+      
+      console.log(data.text);
 
-      console.log(data);
-      // alert(`Transcripción: ${data.text}`);
-      // sendMessage(data.text);
-      setInput("");
-      // console.log(data);
-      // console.log(data.text.action);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { 
+          "role": "user",
+          "message":`${data.text}`
+        }
+      ]);
+
     } catch (error) {
       console.error("Error al transcribir el audio:", error);
       alert("Hubo un error al transcribir el audio.");
     }
+
+    setIsLoading(false);
+    
+    try {
+      const getAction = await fetch("http://172.31.98.19:5001/get-action-from-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"  // Asegúrate de incluir este encabezado
+        },
+        body: JSON.stringify(messages)  // Convierte 'messages' a JSON string
+      });
+      
+
+      if (!getAction.ok) {
+        const data = await getAction.json();
+        throw new Error(data.error || "Error al llamar al maestro.");
+      }
+
+      const action = await getAction.json();
+
+      
+      console.log(action);
+
+      if(action.action === "request_info_or_ans"){
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            "role": "model",
+            "message": `${action.ans}`
+          }
+        ]);
+      }
+
+    } catch (error) {
+      console.error("Error al llamar a maestro:", error);
+      alert("Hubo un error al llamar al maestro.");
+    }
   };
 
   const handleBotonEscuchar = () => {
+
     if (recording) {
       stopRecording();
     } else {
@@ -146,10 +193,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (isActive) {
+    if (recording) {
       console.log("Grabando");
     }
-  }, [isActive]);
+  }, [recording]);
 
   // <-- Variables que se deben traer del backedn -->
 
@@ -193,6 +240,8 @@ export default function Home() {
           isActive={isActive}
           setIsActive={setIsActive}
           handleBotonEscuchar={handleBotonEscuchar}
+          recording={recording}
+          isLoading={isLoading}
         />
 
         {/* <button
