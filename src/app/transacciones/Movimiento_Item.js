@@ -4,9 +4,6 @@ import PropTypes from 'prop-types'; // Asegúrate de importar PropTypes
 const Movimiento_Item = ({ tipo, titulo, subtitulo, valor, categoria, color }) => {
 
 
-  console.log(valor);
-  
-
   return (
     <div className='w-full flex flex-row transition-transform duration-300 transform hover:scale-105 hover:shadow-lg rounded-lg p-1 py-4'>
       <div className='w-16'>
@@ -17,9 +14,9 @@ const Movimiento_Item = ({ tipo, titulo, subtitulo, valor, categoria, color }) =
       </div>
       <div className='flex-auto'>
         <span className='flex flex-row justify-between'>
-          <p className='font-bold text-slate-800'>{categoria}</p>
-          <p className={`font-bold ${(valor >= 0) ? 'text-[#3629B7]' : 'text-[#E50129]'}`}>
-            {valor < 0 ? `- $${Math.abs(valor)}` : `+ $${valor}`}
+          <p className='font-bold text-slate-800 text-wrap'>{titulo}</p>
+          <p className={`font-bold ${(categoria != "Compra") ? 'text-[#3629B7]' : 'text-[#E50129]'}`}>
+          {categoria == "Compra" ? `- ${valor}` : `+ ${valor}`}
           </p>
         </span>
         <p className='text-slate-700 text-sm'>

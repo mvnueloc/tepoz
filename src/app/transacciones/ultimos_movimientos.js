@@ -15,15 +15,10 @@ export const Ultimos_Movimientos = ({movimientos,colores_categoria=new Map()}) =
             movimiento.titulo !== "Negro" && movimiento.titulo !== "negro"  &&
             <div key={index}>
               <Movimiento_Item 
-                titulo={movimiento.categoria} 
+                titulo={movimiento.descripcion} 
                 categoria={movimiento.categoria}
                 tipo={movimiento.tipo} 
-                valor={
-                  movimiento.tipo === "egreso" && movimiento.monto !=0
-                    ? `-${movimiento.monto}`
-                    : movimiento.monto
-                }
-                subtitulo={movimiento.titulo}  // Solo si subtitulo existe
+                valor={ movimiento.monto }
                 color={colores_categoria.get(movimiento.categoria)}
               />
               <hr className='border-t-1 border-gray-300 mt-1' />

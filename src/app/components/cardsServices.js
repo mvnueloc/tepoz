@@ -32,7 +32,7 @@ export const CardServices = () => {
           style={{ width: `${dataCardServices.length * 120}px` }}
         >
           {dataCardServices.map((card, index) => (
-            <div
+            <div 
               key={index}
               className="w-[100px] h-[100px] flex-shrink-0 rounded-[1.5rem] overflow-hidden shadow-lg bg-white ml-4 mt-4 mb-4 flex flex-col items-center relative"
             >
@@ -41,7 +41,7 @@ export const CardServices = () => {
                 src={card.iconCard}
                 alt="Logo Visa"
                 className="creditCard inset-0 absolute mx-auto my-[20%]"
-              />
+              /> <CardServices />
               <div className="text-gray-700 text-sm text-center text-wrap px-2 w-full h-auto top-[60%]">
                 {card.titleCard}
               </div>
