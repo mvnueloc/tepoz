@@ -211,8 +211,7 @@ export default function Home() {
 
         <p>
           <span className="text-primary">Maya</span> ha notado un pago
-          reccurente a la cuenta "Andres Casero" entre el dia 10 a 15 de cada
-          mes,{" "}
+          reccurente a la cuenta Andres Casero entre el dia 10 a 15 de cada mes,{" "}
           <span className="font-semibold">
             ¿Quieres hacer el pago este mes este mes?
           </span>
