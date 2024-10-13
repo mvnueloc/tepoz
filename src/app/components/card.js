@@ -12,43 +12,36 @@ const dataCard = [
   {
     logoCard: logoVisa,
     typeCard: debitCard,
-  },
-  {
-    logoCard: logoVisa,
-    typeCard: creditCard,
-  },
-  {
-    logoCard: logoVisa,
-    typeCard: debitCard,
-  },
+  }
 ];
 
 export const CardBank = ({ saldo, description }) => {
   return (
-    <div className="max-w-full rounded overflow-hidden shadow-lg bg-white ml-4 mr-4 relative">
+    <div className="mt-11">
+      <div className="max-w-full rounded overflow-hidden shadow-lg bg-white ml-4 mr-4 relative">
       <div className="px-6 py-4">
         <p>Saldo</p>
         <div className="font-bold text-xl mb-2 text-gray-900">${saldo}</div>
         <p className="text-gray-700 text-base">{description}</p>
       </div>
 
-      <hr />
-      <div className="pt-4 pb-2 overflow-x-auto whitespace-nowrap">
-        <div className="inline-flex space-x-4" style={{ width: "200%" }}>
+      
+      <div className=" pb-4 whitespace-nowrap">
+        <div className="flex flex-row">
           {dataCard.map((card, index) => (
             <div
               key={index}
-              className="relative inline-block m-2 w-[45%] max-w-xs"
+              className="relative flex justify-center m-2 w-[45%] max-w-xs"
             >
               <Image
                 src={card.logoCard}
                 alt="Logo Visa"
-                className="creditCard absolute top-5 left-5"
+                className="creditCard absolute top-5 left-6"
               />
               <Image
                 src={iconSenal}
                 alt="Icono Señal"
-                className="creditCard absolute top-5 right-5"
+                className="creditCard absolute top-5 right-7"
               />
               <Image
                 src={card.typeCard}
@@ -59,6 +52,7 @@ export const CardBank = ({ saldo, description }) => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };

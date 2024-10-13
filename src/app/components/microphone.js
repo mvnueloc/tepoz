@@ -6,11 +6,18 @@ import iconCard from "/public/Card.svg";
 
 import "../globals.css";
 
-export const MicrophoneContainer = () => {
+export const MicrophoneContainer = ({ isActive, setIsActive}) => {
+
+  const toggleMicrophone = () => {
+    setIsActive(!isActive);
+  };
+
   return (
     <div className="container-microphone flex items-center justify-evenly w-full h-[85px] mt-[70px]">
       <Image src={iconHome} alt="Microphone Icon" width={30} height={30} />
-      <div className="mb-20 container-microphone-img  rounded-[20rem]">
+      <div className="mb-20 container-microphone-img  rounded-[20rem]"
+      onClick={toggleMicrophone}
+      >
         <Image
           src={microphoneComponent}
           alt="Microphone Icon"
