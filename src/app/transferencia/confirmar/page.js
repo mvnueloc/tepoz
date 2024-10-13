@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { useState } from "react";
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 const Page = () => {
@@ -17,7 +18,8 @@ const Page = () => {
   const handleMontoChange = (e) => setMonto(e.target.value);
 
   return (
-    <main className="h-100vh-8rem flex justify-center items-center">
+    <Suspense fallback={<div>Cargando...</div>}>
+      <main className="h-100vh-8rem flex justify-center items-center">
       <section className=" w-[90vw] bg-gray-100 py-6 rounded-lg">
         <h2 className="font-semibold mx-6">Ingresa el monto a transferir</h2>
 
@@ -59,7 +61,8 @@ const Page = () => {
           </Link>
         </div>
       </section>
-    </main>
+    </main>  
+    </Suspense>
   );
 };
 
