@@ -8,37 +8,9 @@ import IconCardBank from "/public/iconcardtBank.png";
 import Image from "next/image";
 import "./globals.css";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import { usePathname, useRouter } from 'next/navigation'
 
-
-const Modal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-8 rounded-lg shadow-lg relative w-[80vw] h-auto flex flex-col">
-        <button
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
-          onClick={onClose}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            viewBox="0 0 15 15">
-            <path
-              fill="currentColor"
-              d="M3.64 2.27L7.5 6.13l3.84-3.84A.92.92 0 0 1 12 2a1 1 0 0 1 1 1a.9.9 0 0 1-.27.66L8.84 7.5l3.89 3.89A.9.9 0 0 1 13 12a1 1 0 0 1-1 1a.92.92 0 0 1-.69-.27L7.5 8.87l-3.85 3.85A.92.92 0 0 1 3 13a1 1 0 0 1-1-1a.9.9 0 0 1 .27-.66L6.16 7.5L2.27 3.61A.9.9 0 0 1 2 3a1 1 0 0 1 1-1c.24.003.47.1.64.27"
-            />
-          </svg>
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
 
 export default function Home() {
 
@@ -49,26 +21,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [recording, setRecording] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(true);
-
-  // <-- Notificaciones -->
-  useEffect(() => {
-    toast.warn(
-      `Modo seguro activado. Consulta a tu asistente para ver los cambios realizados.
-      `,
-      {
-        position: "top-center",
-        autoClose: 10000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        theme: "light",
-      }
-    );
-  }, []);
 
   // <-- Responder por voz
 
@@ -144,7 +96,7 @@ export default function Home() {
         
         return newMessages;
       });
-  
+ 
     } catch (error) {
       console.error("Error al transcribir el audio:", error);
       alert("Hubo un error al transcribir el audio.");
@@ -170,6 +122,7 @@ export default function Home() {
     }
   };
 
+
   const getActionFromText = async (messages) => {
     try {
       const getAction = await fetch("https://gemini-328383011109.us-central1.run.app/get-action-from-text", {
@@ -186,6 +139,7 @@ export default function Home() {
       }
   
       const action = await getAction.json();
+
       console.log(action);
   
       if(action.action === "request_info_or_ans"){
@@ -203,7 +157,6 @@ export default function Home() {
           irAPagina(action.recipient, action.amount);
         }
       }
-  
     } catch (error) {
       console.error("Error al llamar a maestro:", error);
       alert("Hubo un error al llamar al maestro.");
@@ -211,7 +164,6 @@ export default function Home() {
   };
 
   const handleBotonEscuchar = () => {
-
     if (recording) {
       stopRecording();
     } else {
@@ -237,11 +189,7 @@ export default function Home() {
 
   return (
     <>
-      <ToastContainer />
-      <div
-        className={`w-full h-full relative flex flex-col ${
-          isModalOpen ? "blur" : "clase-inactiva"
-        }`}>
+      <div className={`w-full h-full relative flex flex-col `}>
         <Header name={"Gabriela"} />
 
         <div className={` ${isActive ? "blur" : "clase-inactiva"}`}>
@@ -279,46 +227,6 @@ export default function Home() {
           Abrir Modal
         </button> */}
       </div>
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}>
-        <h2 className="text-2xl font-bold mb-4 ">
-          Pago de servicio recomendado.
-        </h2>
-
-        <p>
-          <span className="text-primary">Maya</span> ha notado un pago
-          reccurente a la cuenta Andres Casero entre el dia 10 a 15 de cada mes,{" "}
-          <span className="font-semibold">
-            ¿Quieres hacer el pago este mes este mes?
-          </span>
-        </p>
-
-        <div className="flex justify-around mt-8">
-          <Link
-            href={{
-              pathname: "/transferencia/realizado",
-              query: {
-                name: name,
-                letter: letter,
-                monto: monto,
-                concepto: concepto,
-                fecha: fecha,
-              },
-            }}
-            className="bg-blue-500 rounded-md text-gray-100 px-2 py-1"
-            onClick={() => setIsModalOpen(false)}>
-            {" "}
-            Si, hacer pago
-          </Link>
-          <button
-            className="text-red-500 rounded-md "
-            onClick={() => setIsModalOpen(false)}>
-            No, gracias
-          </button>
-        </div>
-      </Modal>
     </>
   );
 }
