@@ -1,4 +1,6 @@
 import Image from "next/image";
+import crossIcon from "/public/cross.webp";
+import chatIcon from "/public/chat.webp";
 import microphoneIcon from "/public/Microphone.svg";
 import microphoneComponent from "/public/Component-microphone.svg";
 import microphonePause from "/public/Component-pause.svg";
@@ -27,24 +29,48 @@ export const MicrophoneContainer = ({
   isActive,
   setIsActive,
   handleBotonEscuchar,
+  recording,
+  isLoading,
 }) => {
+  
   const toggleMicrophone = () => {
-    setIsActive(!isActive);
-    handleBotonEscuchar();
+    if (!isActive) {
+      setIsActive(!isActive);
+    }
+    
+    if (!isLoading) {
+      handleBotonEscuchar();
+    }
   };
 
+  const handleCross = () => {
+    if (!recording) {
+      setIsActive(false);
+    }
+  } 
   return (
     <div className="container-microphone flex items-center justify-evenly w-full h-[85px] mt-[70px]">
-      <Image
-        src={iconHome}
-        alt="Microphone Icon"
-        width={30}
-        height={30}
-      />
+      { isActive ? (
+        <Image
+          src={chatIcon}
+          alt="Chat Icon"
+          width={25}
+          height={25}
+        />
+      ) : (
+          <Image
+          src={iconHome}
+          alt="Microphone Icon"
+          width={30}
+          height={30}
+          />
+      )
+
+      }
       <div
         className="mb-20 container-microphone-img  rounded-[20rem] cursor-pointer"
         onClick={toggleMicrophone}>
-        {isActive ? (
+        {recording ? (
           <Image
             src={microphonePause}
             alt="Microphone Icon"
@@ -62,12 +88,25 @@ export const MicrophoneContainer = ({
           />
         )}
       </div>
-      <Image
-        src={iconCard}
-        alt="Microphone Icon"
-        width={30}
-        height={30}
-      />
+      {
+        isActive ? (
+          <div onClick={handleCross}>
+            <Image
+            src={crossIcon}
+            alt="Cross Icon"
+            width={25}
+            height={25}
+            />
+          </div>
+        ) : (
+          <Image
+            src={iconCard}
+            alt="Microphone Icon"
+            width={30}
+            height={30}
+          />
+        )
+      }
     </div>
   );
 };
