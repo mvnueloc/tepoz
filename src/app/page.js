@@ -1,6 +1,7 @@
 import Header from "./components/common/header";
 import { CardBank } from "./components/card";
 import { CardServices } from "./components/cardsServices";
+import { MicrophoneContainer } from "./components/microphone";
 import Avatar from "/public/avatar.png";
 import IconCardBank from "/public/iconcardtBank.png";
 import Image from "next/image";
@@ -26,7 +27,7 @@ export default function Home() {
       <CardBank saldo="5300.15" />
       <CardServices />
 
-      <div className="w-[90%] flex-shrink-0 rounded-[1.2rem] overflow-hidden shadow-lg bg-white p-2 ml-4 mt-4 mb-4 flex items-center justify-evenly relative">
+      <div className="w-[90%] flex-shrink-0 rounded-[1.2rem] overflow-hidden shadow-lg bg-white p-2 ml-4  mb-4 flex items-center justify-evenly relative">
         <Image
           src={IconCardBank}
           alt="Logo Visa"
@@ -39,6 +40,8 @@ export default function Home() {
           <h4 className="font-thin">Hasta 20,000 pesos de credito</h4>
         </div>
       </div>
+
+      <MicrophoneContainer />
     </>
   );
 }

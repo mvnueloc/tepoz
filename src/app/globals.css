@@ -4,7 +4,8 @@
 
 
 :root {
-  --text-title-color: #E70F2B 
+  --text-title-color: #E70F2B ;
+  --background-color-primary: #E70F2B;
 }
 
 body {
@@ -13,4 +14,8 @@ body {
 
 .name-avatar{
   color: var(--text-title-color);
+}
+
+.container-microphone, .container-microphone-img {
+  background-color: var(--background-color-primary);
 }
