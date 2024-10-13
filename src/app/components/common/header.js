@@ -1,17 +1,11 @@
 import React from "react";
 import Link from "next/link";
 
-const Header = () => {
+const Header = ({name}) => {
   return (
-    <header className="h-32 bg-primary w-full rounded-b-2xl">
-      <div className="flex justify-center">
-        <img
-          className="w-1/2 mt-6"
-          src="/banorte-logo.png"
-          alt="logo del banco banorte"
-        />
-      </div>
-      <div className="flex justify-between text-gray-100 font-semibold mx-6 mt-4 pb-6">
+    <header className="h-30 bg-primary w-full">
+      <div className="relative flexjustify-between text-gray-100 font-semibold mx-6 mt-4 pb-6">
+        <div className="absolute t-5 l-2">
         <Link href={"/"}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +18,10 @@ const Header = () => {
             />
           </svg>
         </Link>
-        <button>Asistente</button>
+        </div>
+        <div className="text-center">
+          {name}
+        </div>
       </div>
     </header>
   );
