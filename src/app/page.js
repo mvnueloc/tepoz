@@ -9,9 +9,14 @@ import Image from "next/image";
 import "./globals.css";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from 'next/navigation'
+
 
 export default function Home() {
-  const [chat, setChat] = useState(null);
+
+  const pathname = usePathname()
+  const router = useRouter();
+
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -27,18 +32,18 @@ export default function Home() {
       alert("Tu navegador no soporta la grabación de audio.");
       return;
     }
-
+  
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.start();
       setRecording(true);
       audioChunksRef.current = [];
-
+  
       mediaRecorderRef.current.ondataavailable = (event) => {
         audioChunksRef.current.push(event.data);
       };
-
+  
       mediaRecorderRef.current.onstop = () => {
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/wav",
@@ -50,77 +55,107 @@ export default function Home() {
       alert("No se pudo acceder al micrófono.");
     }
   };
-
+  
   const stopRecording = () => {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setRecording(false);
     }
   };
-
+  
   const sendAudio = async (audioBlob) => {
     const formData = new FormData();
     formData.append("audio", audioBlob, "grabacion.wav");
-
+  
     try {
       setIsLoading(true);
-      const response = await fetch("http://127.0.0.1:5000/transcribe", {
+      const response = await fetch("https://whisper-328383011109.us-central1.run.app/audio-to-text", {
         method: "POST",
         body: formData,
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Error en la transcripción");
       }
-
+  
       const data = await response.json();
-
       console.log(data.text);
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          role: "user",
-          message: `${data.text}`,
-        },
-      ]);
+  
+      setMessages((prevMessages) => {
+        const newMessages = [
+          ...prevMessages,
+          { 
+            "role": "user",
+            "message": data.text
+          }
+        ];
+        
+        // Llamamos a getActionFromText después de actualizar los mensajes
+        getActionFromText(newMessages);
+        
+        return newMessages;
+      });
+ 
     } catch (error) {
       console.error("Error al transcribir el audio:", error);
       alert("Hubo un error al transcribir el audio.");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
-
+  };
+  
+  const irAPagina = (name, monto, concepto = 'sin concepto') => {
     try {
-      const getAction = await fetch(
-        "http://172.31.98.19:5001/get-action-from-text",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", // Asegúrate de incluir este encabezado
-          },
-          body: JSON.stringify(messages), // Convierte 'messages' a JSON string
-        }
-      );
+      const path = '/transferencia/confirmar';
+      const query = new URLSearchParams({
+        name: String(name),
+        monto: String(monto),
+        concepto: String(concepto)
+      }).toString();
 
+      const url = `${path}?${query}`;
+      router.push(url);
+    } catch (error) {
+      console.error("Error en irAPagina:", error);
+      alert("Hubo un error al navegar a la página de confirmación.");
+    }
+  };
+
+
+  const getActionFromText = async (messages) => {
+    try {
+      const getAction = await fetch("https://gemini-328383011109.us-central1.run.app/get-action-from-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(messages)
+      });
+  
       if (!getAction.ok) {
         const data = await getAction.json();
         throw new Error(data.error || "Error al llamar al maestro.");
       }
-
+  
       const action = await getAction.json();
 
       console.log(action);
-
-      if (action.action === "request_info_or_ans") {
+  
+      if(action.action === "request_info_or_ans"){
         setMessages((prevMessages) => [
           ...prevMessages,
           {
-            role: "model",
-            message: `${action.ans}`,
-          },
+            "role": "model",
+            "message": action.ans
+          }
         ]);
+      }else if(action.action === "realizar_transaccion"){
+        if (action.concept) {
+          irAPagina(action.recipient, action.amount, action.concept);
+        } else {
+          irAPagina(action.recipient, action.amount);
+        }
       }
     } catch (error) {
       console.error("Error al llamar a maestro:", error);
