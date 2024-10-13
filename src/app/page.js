@@ -10,6 +10,24 @@ import "./globals.css";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Link from "next/link";
+
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-8 rounded-lg shadow-lg relative w-[80vw] h-auto flex flex-col">
+        <button
+          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
+          onClick={onClose}>
+          &times;
+        </button>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -17,6 +35,7 @@ export default function Home() {
   const [messages, setMessages] = useState([]);
   const [recording, setRecording] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   // <-- Notificaciones -->
   useEffect(() => {
@@ -25,7 +44,7 @@ export default function Home() {
       `,
       {
         position: "top-center",
-        autoClose: 5000,
+        autoClose: 10000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -123,10 +142,21 @@ export default function Home() {
     }
   }, [isActive]);
 
+  // <-- Variables que se deben traer del backedn -->
+
+  const name = "Tio Antonio";
+  const letter = "A";
+  const [monto, setMonto] = useState("100.00");
+  const concepto = "Carne asada.";
+  const fecha = "12 de Octubre de 2024";
+
   return (
     <>
       <ToastContainer />
-      <div className="w-full h-full relative flex flex-col ">
+      <div
+        className={`w-full h-full relative flex flex-col ${
+          isModalOpen ? "blur" : "clase-inactiva"
+        }`}>
         <Header name={"Gabriela"} />
 
         <div className={` ${isActive ? "blur" : "clase-inactiva"}`}>
@@ -155,7 +185,54 @@ export default function Home() {
           setIsActive={setIsActive}
           handleBotonEscuchar={handleBotonEscuchar}
         />
+
+        {/* <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={() => setIsModalOpen(true)}>
+          Abrir Modal
+        </button> */}
       </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}>
+        <h2 className="text-2xl font-bold mb-4 ">
+          Pago de servicio recomendado.
+        </h2>
+
+        <p>
+          <span className="text-primary">Maya</span> ha notado un pago
+          reccurente a la cuenta "Andres Casero" entre el dia 10 a 15 de cada
+          mes,{" "}
+          <span className="font-semibold">
+            ¿Quieres hacer el pago este mes este mes?
+          </span>
+        </p>
+
+        <div className="flex justify-around mt-8">
+          <Link
+            href={{
+              pathname: "/transferencia/realizado",
+              query: {
+                name: name,
+                letter: letter,
+                monto: monto,
+                concepto: concepto,
+                fecha: fecha,
+              },
+            }}
+            className="bg-blue-500 rounded-md text-gray-100 px-2 py-1"
+            onClick={() => setIsModalOpen(false)}>
+            {" "}
+            Si, hacer pago
+          </Link>
+          <button
+            className="text-red-500 rounded-md "
+            onClick={() => setIsModalOpen(false)}>
+            No, gracias
+          </button>
+        </div>
+      </Modal>
     </>
   );
 }
