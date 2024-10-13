@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import Flecha from "../components/flecha";
+import { Ultimos_Movimientos } from "./ultimos_movimientos";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -68,8 +69,8 @@ export default function Analisis_Financiero_Screen() {
       }
     };
   
-    // fetchSaldo();
-    // fetchTransacciones();
+    fetchSaldo();
+    fetchTransacciones();
   }, []);
 
   useEffect(() => {
