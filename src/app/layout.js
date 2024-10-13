@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="md:hidden">{children}</div>
+        <div className="md:hidden h-[100dvh] w-[100dvw]">{children}</div>
         <div className="hidden  bg-gray-300 h-[100vh] w-[500] md:flex items-center justify-center">
           <div>
             <p className="text-3xl font-bold   text-center">
